@@ -62,13 +62,15 @@ Cable internet access requires special modems, called cable modems. As with a DS
 
 ### fiber to the home(FTTH)
 
- As the name suggests, the FTTH concept is simple—provide an optical fiber path from the CO directly to the home. FTTH can potentially provide Internet access rates in the gigabits per second range. However, most FTTH ISPs provide different rate offerings, with the higher rates naturally costing more money.
-
-### Optical Distribution
+As the name suggests, the FTTH concept is simple—provide an optical fiber path from the CO directly to the home. FTTH can potentially provide Internet access rates in the gigabits per second range. However, most FTTH ISPs provide different rate offerings, with the higher rates naturally costing more money.
 
 There are several competing technologies for optical distribution from the CO to the homes. The simplest optical distribution network is called direct fiber, with one fiber leaving the CO for each home. More commonly, each fiber leaving the central office is actually shared by many homes; it is not until the fiber gets relatively close to the homes that it is split into individual customer-specific fibers. There are two competing optical-distribution network architectures that perform this splitting: active optical networks (AONs) and passive optical networks (PONs). AON is essentially switched Ethernet.
 
 Here, we briefly discuss PON, which is used in Verizon’s FIOS service. Figure 1.7 shows FTTH using the PON distribution architecture. Each home has an optical network terminator (ONT), which is connected by dedicated optical fiber to a neighborhood splitter. The splitter combines a number of homes (typically less than 100) onto a single, shared optical fiber, which connects to an optical line terminator (OLT) in the telco’s CO. The OLT, providing conversion between optical and electrical signals, connects to the Internet via a telco router. In the home, users connect a home router (typically a wireless router) to the ONT and access the Internet via this home router. In the PON architecture, all packets sent from OLT to the splitter are replicated at the splitter (similar to a cable head end).
+
+![](https://github.com/kafkaesquebug/Computer-Networking/blob/master/images/0103.png?raw=true)
+
+
 
 ### Other Access Network
 
@@ -77,4 +79,22 @@ In locations where DSL, cable, and FTTH are not available (e.g., in some rural s
 ### Local Area Network(LAN)
 
 On corporate and university campuses, and increasingly in home settings, a local area network (LAN) is used to connect an end system to the edge router. Although there are many types of LAN technologies, Ethernet is by far the most prevalent access technology in corporate, university, and home networks. As shown in Figure 1.8, Ethernet users use twisted-pair copper wire to connect to an Ethernet . The Ethernet switch, or a network of such switch interconnected switches, is then in turn connected into the larger Internet. 
+
+![](https://github.com/kafkaesquebug/Computer-Networking/blob/master/images/0104.png?raw=true)
+
+
+
+## 1.2.2 Physical Media
+
+*Ignored for a moment
+
+
+
+# 1.3 The Network Core
+
+The network core—the mesh of packet switches and links that interconnects the Internet's end systems.
+
+
+
+## 1.3.1 Packet Switching
 
