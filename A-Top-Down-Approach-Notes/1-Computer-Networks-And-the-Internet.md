@@ -94,7 +94,17 @@ On corporate and university campuses, and increasingly in home settings, a local
 
 The network core—the mesh of packet switches and links that interconnects the Internet's end systems.
 
+![](https://github.com/kafkaesquebug/Computer-Networking/blob/master/images/0105.jpg?raw=true)
+
 
 
 ## 1.3.1 Packet Switching
+
+In a network application, end systems exchange `messages` with each other.  To send a message from a source end system to a destination end system, the source breaks long messages into smaller chunks of data known as `packets`. Between source and destination, each packet travels through `communication links` and `packet switches` (for which there are two predominant types, `routers` and `link-layer switches`).
+
+### Store-and-Forward Transmission
+
+Most packet switches use `store-and-forward transmission` at the inputs to the links. Store-and-forward transmission means that the packet switch must receive the entire packet before it can begin to transmit the first bit of the packet onto the outbound link.
+
+
 
