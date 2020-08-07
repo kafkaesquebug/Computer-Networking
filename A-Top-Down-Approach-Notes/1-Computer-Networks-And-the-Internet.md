@@ -212,6 +212,62 @@ As shown in Figure 1.15, the Google private network attempts to “bypass” the
 
 ### Types of Delay
 
+![](https://github.com/kafkaesquebug/Computer-Networking/blob/master/images/0110.jpg?raw=true)
+
 Let’s explore these delays in the context of Figure 1.16. As part of its end-to-end route between source and destination, a packet is sent from the upstream node through router A to router B. Our goal is to characterize the nodal delay at router A. 
 
 Note that router A has an outbound link leading to router B. This link is preceded by a queue (also known as a buffer). When the packet arrives at router A from the upstream node, router A examines the packet’s header to determine the appropriate outbound link for the packet and then directs the packet to this link. In this example, the outbound link for the packet is the one that leads to router B. A packet can be transmitted on a link only if there is no other packet currently being transmitted on the link and if there are no other packets preceding it in the queue; if the link is currently busy or if there are other packets already queued for the link, the newly arriving packet will then join the queue.
+
+### Processing Delay
+
+The time required to examine the packet’s header and determine where to direct the packet is part of the `processing delay`. 
+
+The processing delay can also include other factors, such as the time needed to check for bit-level errors in the packet that occurred in transmitting the packet’s bits from the upstream node to router A. Processing delays in high-speed routers are typically on the order of microseconds or less. After this nodal processing, the router directs the packet to the queue that precedes the link to router B.
+
+### Queuing Delay
+
+At the queue, the packet experiences a `queuing delay` as it waits to be transmitted onto the link. 
+
+The length of the queuing delay of a specific packet will depend on the number of earlier-arriving packets that are queued and waiting for transmission onto the link. If the queue is empty and no other packet is currently being transmitted, then our packet’s queuing delay will be zero. On the other hand, if the traffic is heavy and many other packets are also waiting to be transmitted, the queuing delay will be long. Queuing delays can be on the order of microseconds to milliseconds in practice.
+
+### Transmission Delay
+
+Assuming that packets are transmitted in a first-come-first-served manner, as is common in packetswitched networks, our packet can be transmitted only after all the packets that have arrived before it have been transmitted. Denote the length of the packet by L bits, and denote the transmission rate of the link from router A to router B by R bits/sec. The `transmission delay` is L/R. This is the amount of time required to push (that is, transmit) all of the packet’s bits into the link. Transmission delays are typically on the order of microseconds to milliseconds in practice.
+
+### Propagation Delay
+
+Once a bit is pushed into the link, it needs to propagate to router B. The time required to propagate from the beginning of the link to router B is the `propagation delay`. 
+
+The bit propagates at the propagation speed of the link. The propagation speed depends on the physical medium of the link (that is, fiber optics, twisted-pair copper wire, and so on) and is in the range of 2⋅108 meters/sec to 3⋅108 meters/sec which is equal to, or a little less than, the speed of light. 
+
+The propagation delay is the distance between two routers divided by the propagation speed. That is, the propagation delay is d/s, where d is the distance between router A and router B and s is the propagation speed of the link. Once the last bit of the packet propagates to node B, it and all the preceding bits of the packet are stored in router B. The whole process then continues with router B now performing the forwarding. In wide-area networks, propagation delays are on the order of milliseconds.
+
+### Comparing Transmission and Propagation Delay
+
+Newcomers to the field of computer networking sometimes have difficulty understanding the difference between transmission delay and propagation delay. The difference is subtle but important. 
+
+The transmission delay is the amount of time required for the router to push out the packet; it is a function of the packet’s length and the transmission rate of the link, but has nothing to do with the distance between the two routers. The propagation delay, on the other hand, is the time it takes a bit to propagate from one router to the next; it is a function of the distance between the two routers, but has nothing to do with the packet’s length or the transmission rate of the link.
+
+If we let `dproc` , `dqueue` , `dtrans` , and `dprop` denote the processing, queuing, transmission, and propagation delays, then the total nodal delay is given by
+
+`dnodal = dproc + dqueue + dtrans + dprop`
+
+The contribution of these delay components can vary significantly. For example, dprop can be negligible (for example, a couple of microseconds) for a link connecting two routers on the same university campus;  however, `dprop` is hundreds of milliseconds for two routers interconnected by a geostationary satellite link, and can be the dominant term in `dnodal`. Similarly, `dtrans` can range from negligible to significant. Its contribution is typically negligible for transmission rates of 10 Mbps and higher (for example, for LANs); however, it can be hundreds of milliseconds for large Internet packets sent over low-speed dial-up modem links. The processing delay, `dproc` , is often negligible; however, it strongly influences a router’s maximum throughput, which is the maximum rate at which a router can forward packets.
+
+
+
+## 1.4.2 Queuing Delay and Packet Loss
+
+The most complicated and interesting component of nodal delay is the queuing delay, `dqueue`.
+
+We give only a high-level, intuitive discussion of queuing delay here. Unlike the other three delays (namely, `dproc` , `dtrans` , and `dprop` ), the queuing delay can vary from packet to packet.  For example, if 10 packets arrive at an empty queue at the same time, the first packet transmitted will suffer no queuing delay, while the 0ast packet transmitted will suffer a relatively large queuing delay (while it waits for the other nine packets to be transmitted). Therefore, when characterizing queuing delay, one typically uses statistical measures, such as average queuing delay, variance of queuing delay, and the probability that the queuing delay exceeds some specified value.
+
+When is the queuing delay large and when is it insignificant? The answer to this question depends on the rate at which traffic arrives at the queue, the transmission rate of the link, and the nature of the arriving traffic, that is, whether the traffic arrives periodically or arrives in bursts.
+
+To gain some insight here, let `a` denote the average rate at which packets arrive at the queue (a is in units of packets/sec). Recall that `R` is the transmission rate; that is, it is the rate (in bits/sec) at which bits are pushed out of the queue.  Also suppose, for simplicity, that all packets consist of `L` bits.  Then the average rate at which bits arrive at the queue is `La` bits/sec.  Finally, assume that the queue is very big, so that it can hold essentially an infinite number of bits.  The ratio `La/R`, called the `traffic intensity`, often plays an important role in estimating the extent of the queuing delay.  If `La/R` > 1, then the average rate at which bits arrive at the queue exceeds the rate at which the bits can be transmitted from the queue. In this unfortunate situation, the queue will tend to increase without bound and the queuing delay will approach infinity! Therefore, one of the golden rules in traffic engineering is: _Design your system so that the traffic intensity is no greater than 1._
+
+Now consider the case `La/R` ≤ 1. Here, the nature of the arriving traffic impacts the queuing delay. For example, if packets arrive periodically—that is, one packet arrives every `L/R ` seconds—then every packet will arrive at an empty queue and there will be no queuing delay.  On the other hand, if packets arrive in bursts but periodically, there can be a significant average queuing delay. 
+
+The two examples of periodic arrivals described above are a bit academic. Typically, the arrival process to a queue is _random_;  that is, the arrivals do not follow any pattern and the packets are spaced apart by random amounts of time.  In this more realistic case, the quantity `La/R` is not usually sufficient to fully characterize the queuing delay statistics. Nonetheless, it is useful in gaining an intuitive understanding of the extent of the queuing delay
+
+P67
