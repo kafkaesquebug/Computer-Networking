@@ -268,6 +268,34 @@ To gain some insight here, let `a` denote the average rate at which packets arri
 
 Now consider the case `La/R` ≤ 1. Here, the nature of the arriving traffic impacts the queuing delay. For example, if packets arrive periodically—that is, one packet arrives every `L/R ` seconds—then every packet will arrive at an empty queue and there will be no queuing delay.  On the other hand, if packets arrive in bursts but periodically, there can be a significant average queuing delay. 
 
-The two examples of periodic arrivals described above are a bit academic. Typically, the arrival process to a queue is _random_;  that is, the arrivals do not follow any pattern and the packets are spaced apart by random amounts of time.  In this more realistic case, the quantity `La/R` is not usually sufficient to fully characterize the queuing delay statistics. Nonetheless, it is useful in gaining an intuitive understanding of the extent of the queuing delay
+The two examples of periodic arrivals described above are a bit academic. Typically, the arrival process to a queue is _random_;  that is, the arrivals do not follow any pattern and the packets are spaced apart by random amounts of time.  In this more realistic case, the quantity `La/R` is not usually sufficient to fully characterize the queuing delay statistics. Nonetheless, it is useful in gaining an intuitive understanding of the extent of the queuing delay. In particular, if the traffic intensity is close to zero, then packet arrivals are few and far between and it is unlikely that an arriving packet will find another packet in the queue.  Hence, the average queuing delay will be close to zero. On the other hand, when the traffic intensity is close to 1, there will be intervals of time when the arrival rate exceeds the transmission capacity (due to variations in packet arrival rate), and a queue will form during these periods of time; when the arrival rate is less than the transmission capacity, the length of the queue will shrink. Nonetheless, as the traffic intensity approaches 1, the average queue length gets larger and larger. The qualitative dependence of average queuing delay on the traffic intensity is shown in Figure 1.18.
 
-P67
+![](https://github.com/kafkaesquebug/Computer-Networking/blob/master/images/0111.jpg?raw=true)
+
+
+
+### Packet Loss
+
+In our discussions above, we have assumed that the queue is capable of holding an infinite number of packets. In reality a queue preceding a link has finite capacity, although the queuing capacity greatly depends on the router design and cost. Because the queue capacity is finite, packet delays do not really approach infinity as the traffic intensity approaches 1. Instead, a packet can arrive to find a full queue. With no place to store such a packet, a router will `drop` that packet; that is, the packet will be `lost`. This overflow at a queue can again be seen in the Java applet for a queue when the traffic intensity is greater than 1.
+
+From an end-system viewpoint, a packet loss will look like a packet having been transmitted into the network core but never emerging from the network at the destination. The fraction of lost packets increases as the traffic intensity increases. Therefore, performance at a node is often measured not only in terms of delay, but also in terms of the probability of packet loss. 
+
+
+
+## 1.4.3 End-to-End Delay
+
+Let’s now consider the total delay from source to destination. Let’s also suppose for the moment that the network is uncongested (so that queuing delays are negligible), the processing delay at each router and at the source host is `dproc`, the transmission rate out of each router and out of the source host is `R` bits/sec, and the propagation on each link is `dprop` . The nodal delays accumulate and give an end-to-end delay,
+
+`dend-end = N(dproc+dtrans+dprop)`
+
+where, once again, `dtrans = L/R`, where `L` is the packet size. 
+
+### End System, Application, and Other Delays
+
+In addition to processing, transmission, and propagation delays, there can be additional significant delays in the end systems. For example, an end system wanting to transmit a packet into a shared medium (e.g., as in a WiFi or cable modem scenario) may purposefully delay its transmission as part of its protocol for sharing the medium with other end systems; we’ll consider such protocols in detail in Chapter 6. Another important delay is media `packetization delay`, which is present in Voice-over-IP (VoIP) applications. In VoIP, the sending side must first fill a packet with encoded digitized speech before passing the packet to the Internet. This time to fill a packet—called the packetization delay—can be significant and can impact the user-perceived quality of a VoIP call. This issue will be further explored in a homework problem at the end of this chapter
+
+
+
+## 1.4.4 Throughput in Computer Networks
+
+P71
